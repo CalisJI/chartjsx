@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Line, Bar, Pie } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import Chart, { Legend } from "chart.js/auto";
 import axios from "axios";
 
 function BarChart() {
   const [msg, setMsg] = useState("");
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = setTimeout(() => {
       axios.get("/api/test").then((result) => {
         console.log(result.data.message);
         setMsg(result.data.message);
       });
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [msg]);
+  console.log("re rendered");
   return (
     <div>
-      {/* <h1>{}</h1> */}
-      {/* <h1>ffff</h1> */}
       <Bar
         data={{
           labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -66,13 +65,13 @@ function BarChart() {
             },
           ],
         }}
-        height={400}
+        height={200}
         width={600}
         options={{
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
           scales: {
             yield: {
-              beginAtZero: true,
+              beginAtZero: false,
             },
           },
           plugins: {
@@ -90,6 +89,8 @@ function BarChart() {
           },
         }}
       />
+      <h1>{msg}</h1>
+      {/* <button onClick={clickhadler}></button> */}
     </div>
   );
 }
