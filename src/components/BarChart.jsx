@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import Chart, { Legend } from "chart.js/auto";
 import axios from "axios";
 
 function BarChart() {
   const [msg, setMsg] = useState("");
+  const [mysqldata,setMysqldata] = useState([]);
   useEffect(() => {
     const timer = setTimeout(() => {
       axios.get("/api/test").then((result) => {
@@ -14,6 +15,13 @@ function BarChart() {
     }, 1000);
     return () => clearTimeout(timer);
   }, [msg]);
+  useLayoutEffect(()=>{
+    axios.get('/api/news').then((data)=>{
+      const news = data.data;
+      console.log(news.news)
+      setMysqldata(news.news);
+    })
+  },[]);
   console.log("re rendered");
   return (
     <div>
@@ -91,6 +99,15 @@ function BarChart() {
       />
       <h1>{msg}</h1>
       {/* <button onClick={clickhadler}></button> */}
+      <ul>
+        {mysqldata.map((item)=>(
+          <li key={item.id}>
+              <h2 style={{color:'blue'}}>{item.title}</h2>
+              <h3 style={{color: 'red'}}>{item.descriptions}</h3>
+              <h4 style={{color:'hotpink'}}>{item.content}</h4>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
